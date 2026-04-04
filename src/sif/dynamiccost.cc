@@ -119,6 +119,10 @@ constexpr ranged_default_t<float> kSpeedPenaltyFactorRange{0.0f, kDefaultSpeedPe
 constexpr ranged_default_t<uint32_t> kFixedSpeedRange{0, baldr::kDisableFixedSpeed,
                                                       baldr::kMaxSpeedKph};
 
+// Speed adjustment for emergency vehicles / special routing
+constexpr ranged_default_t<float> kSpeedFactorRange{0.01f, 1.0f, 10.0f};
+constexpr ranged_default_t<float> kSpeedOffsetRange{-200.0f, 0.0f, 200.0f};
+
 // Default dimension
 constexpr float kDefaultHeight = 1.6f; // Meters (62.9921 inches)
 constexpr float kDefaultWidth = 1.9f;  // Meters (74.8031 inches)
@@ -200,6 +204,8 @@ DynamicCost::DynamicCost(const Costing& costing,
       ignore_closures_(costing.options().ignore_closures()),
       ignore_construction_(costing.options().ignore_construction()),
       top_speed_(costing.options().top_speed()), fixed_speed_(costing.options().fixed_speed()),
+      speed_factor_(costing.options().has_speed_factor() ? costing.options().speed_factor() : 1.0f),
+      speed_offset_(costing.options().speed_offset()),
       filter_closures_(ignore_closures_ ? false : costing.filter_closures()),
       penalize_uturns_(penalize_uturns), is_hgv_(costing.type() == Costing::truck),
       min_linear_cost_factor_(1.) {
@@ -606,6 +612,10 @@ void ParseBaseCostOptions(const rapidjson::Value& json,
   JSON_PBF_DEFAULT_V2(co, cfg.include_hov3_, json, "/include_hov3", include_hov3);
 
   JSON_PBF_RANGED_DEFAULT_V2(co, kFixedSpeedRange, json, "/fixed_speed", fixed_speed, warnings);
+
+  // Speed adjustment (e.g. emergency vehicles driving above speed limits)
+  JSON_PBF_RANGED_DEFAULT_V2(co, kSpeedFactorRange, json, "/speed_factor", speed_factor, warnings);
+  JSON_PBF_RANGED_DEFAULT_V2(co, kSpeedOffsetRange, json, "/speed_offset", speed_offset, warnings);
 
   // Dimensions
   JSON_PBF_RANGED_DEFAULT(co, cfg.height_, json, "/height", height, warnings);
