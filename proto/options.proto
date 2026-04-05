@@ -363,6 +363,9 @@ message Costing {
     oneof has_speed_offset {
       float speed_offset = 98;
     }
+    oneof has_speed_offset_threshold {
+      float speed_offset_threshold = 99;
+    }
   }
 
   oneof has_options {
