@@ -366,6 +366,9 @@ message Costing {
     oneof has_speed_offset_threshold {
       float speed_offset_threshold = 99;
     }
+    oneof has_oneway_factor {
+      float oneway_factor = 100;
+    }
   }
 
   oneof has_options {

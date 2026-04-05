@@ -124,6 +124,9 @@ constexpr ranged_default_t<float> kSpeedFactorRange{0.01f, 1.0f, 10.0f};
 constexpr ranged_default_t<float> kSpeedOffsetRange{-200.0f, 0.0f, 200.0f};
 constexpr ranged_default_t<float> kSpeedOffsetThresholdRange{0.0f, 0.0f, 200.0f};
 
+// Cost multiplier for wrong-way segments (only active with ignore_oneways)
+constexpr ranged_default_t<float> kOnewayFactorRange{1.0f, 1.0f, 100.0f};
+
 // Default dimension
 constexpr float kDefaultHeight = 1.6f; // Meters (62.9921 inches)
 constexpr float kDefaultWidth = 1.9f;  // Meters (74.8031 inches)
@@ -208,6 +211,7 @@ DynamicCost::DynamicCost(const Costing& costing,
       speed_factor_(costing.options().has_speed_factor() ? costing.options().speed_factor() : 1.0f),
       speed_offset_(costing.options().speed_offset()),
       speed_offset_threshold_(costing.options().speed_offset_threshold()),
+      oneway_factor_(costing.options().has_oneway_factor() ? costing.options().oneway_factor() : 1.0f),
       filter_closures_(ignore_closures_ ? false : costing.filter_closures()),
       penalize_uturns_(penalize_uturns), is_hgv_(costing.type() == Costing::truck),
       min_linear_cost_factor_(1.) {
@@ -620,6 +624,9 @@ void ParseBaseCostOptions(const rapidjson::Value& json,
   JSON_PBF_RANGED_DEFAULT_V2(co, kSpeedOffsetRange, json, "/speed_offset", speed_offset, warnings);
   JSON_PBF_RANGED_DEFAULT_V2(co, kSpeedOffsetThresholdRange, json, "/speed_offset_threshold",
                              speed_offset_threshold, warnings);
+
+  // Cost multiplier for wrong-way segments (only active with ignore_oneways)
+  JSON_PBF_RANGED_DEFAULT_V2(co, kOnewayFactorRange, json, "/oneway_factor", oneway_factor, warnings);
 
   // Dimensions
   JSON_PBF_RANGED_DEFAULT(co, cfg.height_, json, "/height", height, warnings);

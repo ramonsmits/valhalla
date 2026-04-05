@@ -559,6 +559,9 @@ Cost AutoCost::EdgeCost(const baldr::DirectedEdge* edge,
     // Add a penalty for traversing a closed edge
     factor *= closure_factor_;
   }
+  if (IsAgainstOneway(edge)) {
+    factor *= oneway_factor_;
+  }
 
   // base cost before the factor is a linear combination of time vs distance, depending on which
   // one the user thinks is more important to them
@@ -998,6 +1001,9 @@ public:
     if (IsClosed(edge, tile)) {
       // Add a penalty for traversing a closed edge
       factor *= closure_factor_;
+    }
+    if (IsAgainstOneway(edge)) {
+      factor *= oneway_factor_;
     }
 
     factor *= EdgeFactor(edgeid);

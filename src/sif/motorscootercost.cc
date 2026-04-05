@@ -469,6 +469,9 @@ Cost MotorScooterCost::EdgeCost(const baldr::DirectedEdge* edge,
     // Add a penalty for traversing a closed edge
     factor *= closure_factor_;
   }
+  if (IsAgainstOneway(edge)) {
+    factor *= oneway_factor_;
+  }
 
   factor *= EdgeFactor(edgeid);
   return {sec * factor, sec};

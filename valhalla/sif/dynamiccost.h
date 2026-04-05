@@ -1188,6 +1188,16 @@ public:
     return std::min(adjusted, top_speed_);
   }
 
+  /**
+   * Check if an edge is being traversed against its one-way direction
+   * (only meaningful when ignore_oneways_ is true).
+   */
+  inline bool IsAgainstOneway(const baldr::DirectedEdge* edge) const {
+    return ignore_oneways_ &&
+           !(edge->forwardaccess() & access_mask_) &&
+           (edge->reverseaccess() & access_mask_);
+  }
+
   bool DefaultHierarchyLimits() {
     return default_hierarchy_limits;
   }
@@ -1375,6 +1385,7 @@ protected:
   float speed_factor_;
   float speed_offset_;
   float speed_offset_threshold_;
+  float oneway_factor_;
   // if ignore_closures_ is set to true by the user request, filter_closures_ is forced to false
   bool filter_closures_{true};
 
