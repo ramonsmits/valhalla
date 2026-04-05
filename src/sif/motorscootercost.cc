@@ -437,10 +437,10 @@ Cost MotorScooterCost::EdgeCost(const baldr::DirectedEdge* edge,
   }
 
   // prevent scooter speed to become 0
-  uint32_t scooter_speed =
+  uint32_t scooter_speed = AdjustSpeed(static_cast<uint32_t>(
       std::max(1.f, (std::min(top_speed_, speed) *
                      kSurfaceSpeedFactors[static_cast<uint32_t>(edge->surface())] *
-                     kGradeBasedSpeedFactor[static_cast<uint32_t>(edge->weighted_grade())]));
+                     kGradeBasedSpeedFactor[static_cast<uint32_t>(edge->weighted_grade())]))));
 
   assert(scooter_speed < kSpeedFactor.size());
   float sec = (edge->length() * kSpeedFactor[scooter_speed]);

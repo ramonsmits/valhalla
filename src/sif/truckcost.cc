@@ -509,9 +509,9 @@ Cost TruckCost::EdgeCost(const baldr::DirectedEdge* edge,
                                          &flow_sources, time_info.seconds_from_now)
                         : fixed_speed_;
 
-  auto final_speed =
+  auto final_speed = AdjustSpeed(
       std::min(edge_speed,
-               edge->truck_speed() ? std::min(edge->truck_speed(), top_speed_) : top_speed_);
+               edge->truck_speed() ? std::min(edge->truck_speed(), top_speed_) : top_speed_));
 
   float sec = edge->length() * kSpeedFactor[final_speed];
 

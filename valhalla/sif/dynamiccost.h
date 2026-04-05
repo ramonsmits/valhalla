@@ -1172,6 +1172,22 @@ public:
     return speed_penalty;
   }
 
+  /**
+   * Apply speed_factor (multiplicative) and speed_offset (additive km/h) to a resolved speed.
+   * Useful for modeling vehicles that exceed normal speed limits (e.g. emergency vehicles).
+   * speed_offset is only applied when base speed >= speed_offset_threshold (avoids boosting
+   * physically constrained roads like bike paths where the limit is physical, not regulatory).
+   * Result is clamped to [1, top_speed_].
+   */
+  inline uint32_t AdjustSpeed(uint32_t speed) const {
+    if (speed_factor_ == 1.0f && speed_offset_ == 0.0f)
+      return speed;
+    float offset = (static_cast<float>(speed) >= speed_offset_threshold_) ? speed_offset_ : 0.0f;
+    auto adjusted = static_cast<uint32_t>(
+        std::max(1.f, static_cast<float>(speed) * speed_factor_ + offset));
+    return std::min(adjusted, top_speed_);
+  }
+
   bool DefaultHierarchyLimits() {
     return default_hierarchy_limits;
   }
@@ -1356,6 +1372,9 @@ protected:
   bool ignore_construction_{false};
   uint32_t top_speed_;
   uint32_t fixed_speed_;
+  float speed_factor_;
+  float speed_offset_;
+  float speed_offset_threshold_;
   // if ignore_closures_ is set to true by the user request, filter_closures_ is forced to false
   bool filter_closures_{true};
 
