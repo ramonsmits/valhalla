@@ -1172,6 +1172,16 @@ public:
     return speed_penalty;
   }
 
+  /**
+   * Check if an edge is being traversed against its one-way direction
+   * (only meaningful when ignore_oneways_ is true).
+   */
+  inline bool IsAgainstOneway(const baldr::DirectedEdge* edge) const {
+    return ignore_oneways_ &&
+           !(edge->forwardaccess() & access_mask_) &&
+           (edge->reverseaccess() & access_mask_);
+  }
+
   bool DefaultHierarchyLimits() {
     return default_hierarchy_limits;
   }
@@ -1356,6 +1366,7 @@ protected:
   bool ignore_construction_{false};
   uint32_t top_speed_;
   uint32_t fixed_speed_;
+  float oneway_factor_;
   // if ignore_closures_ is set to true by the user request, filter_closures_ is forced to false
   bool filter_closures_{true};
 
