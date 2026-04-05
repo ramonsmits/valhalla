@@ -1,3 +1,9 @@
+> [!NOTE]
+> **This is a fork of [valhalla/valhalla](https://github.com/valhalla/valhalla).**
+> It adds query-time costing options to produce semi-accurate times and
+> routes for Dutch fire service vehicles (brandweer) responding under
+> priority. See [MODIFICATIONS.md](./MODIFICATIONS.md) for the full list
+> of changes and [AGENTS.md](./AGENTS.md) for the branching model.
 
 
 
